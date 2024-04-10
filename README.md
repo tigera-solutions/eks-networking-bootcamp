@@ -343,29 +343,22 @@ If you create all the policies correctly, at some point, you will start seeing z
 >
 > - After enforcing the default-deny policy, if you need to troubleshoot, use the Service Graph or the Flow Visualizations tools to see what traffic is being blocked.
 
+### Clean up
 
+Let's delete the application to release the loadbalancer and then, the EKS cluster.
 
+1. Delete the applications stack to clean up any loadbalancer services.
 
+   ```bash
+   kubectl delete -f pre/40-catfacts-app.yaml 
+   ```
 
+2. Delete EKS cluster.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   ```bash
+   source ~/labVars.env
+   eksctl delete cluster --name $CLUSTERNAME1 --region $REGION
+   ```
 
 ## Module 4:  EKS cluster with Amazon VPC CNI overlay and Windows nodegroup and Calico Cloud plugin
 
@@ -379,7 +372,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
    > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
    >
    > ```console
-   > source ~/workshopvars.env
+   > source ~/labVars.env
    > ```
 
    ```bash
@@ -527,7 +520,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
 5. Repeat steps 2 and 3.
 
-## Module 3: EKS cluster with Calico CNI in eBPF mode
+## Module 5: EKS cluster with Calico CNI in eBPF mode
 
 In this example EKS cluster is provisioned with Calico CNI where each pod gets networked by Calico, getting a private IP from configured POD CIDR. The Calico CNI in this example is installed using eBPF mode.
 
@@ -648,120 +641,3 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
      --nodes-max 2 \
      --max-pods-per-node 100
    ```
-
-## Module 5: Connect EKS cluster to Calico Cloud
-
-Follow instructions in the official [Calico Cloud documentation](https://docs.tigera.io/calico-cloud/about) to [connect your AKS cluster to Calico Cloud](https://docs.tigera.io/calico-cloud/get-started/connect/) management plane.
-
-## Configure Calico Cloud
-
-Configure Calico Cloud
-
-> [!IMPORTANT]
-> Some base layer configuration is specific to Calico commercial version such as Calico Cloud or Calico Enterprise and will not work on Calico Open Source.
-
-```bash
-# configure FelixConfiguration resource
-kubectl patch felixconfiguration default --type merge --patch-file demo/setup/felix.yaml
-```
-
-## deploy sample application and test policies
-
-Deploy `hipstershop` demo application and a few utility pods
-
-```bash
-kubectl apply -f demo/app/hipstershop.yaml
-kubectl apply -f demo/app/centos.yaml
-kubectl apply -f demo/app/netshoot.yaml
-```
-
-Test connectivity to `hipstershop` services
-
-```bash
-# connect to hipstershop/frontend service from default/netshoot pod
-kubectl exec -t netshoot -- sh -c 'curl -m2 -sI frontend.hipstershop | grep -i http'
-kubectl exec -t netshoot -- sh -c 'nc -zv -w2 paymentservice.hipstershop 50051'
-# connect to hipstershop/frontend service from a local hipstershop/centos pod
-kubectl -n hipstershop exec -t centos -- sh -c 'curl -m2 -sI frontend.hipstershop | grep -i http'
-```
-
-Deploy security base layer for the cluster
-
-```bash
-kubectl apply -f demo/00-tiers/
-kubectl apply -f demo/01-base/
-```
-
-Deploy permissive global `default-deny` policy
-
-```bash
-kubectl apply -f demo/10-zero-trust-security/calico.staged.default-deny.yaml
-```
-
-Deploy policies for `hipstershop` application to only allow required communications between the services
-
-```bash
-kubectl apply -f demo/10-zero-trust-security/hipstershop.policies.yaml
-```
-
-Deploy `iis` application for Windows nodes
-
->Note, this only works if your cluster has Windows nodepool
-
-```bash
-kubectl apply -f demo/app/iis.yaml
-
-# test connection to IIS service
-kubectl exec -t netshoot -- sh -c 'curl -m2 -sI iis-svc | grep -i http'
-
-# secure IIS app
-kubectl apply -f demo/10-zero-trust-security/iis-policy.yaml
-```
-
-Use network sets
-
-```bash
-kubectl apply -f demo/10-zero-trust-security/embargo.networkset.yaml
-kubectl apply -f demo/10-zero-trust-security/calico.embargo-policy-egress.yaml
-```
-
-Configure egress controls via DNS policies
-
-```bash
-kubectl apply -f demo/20-egress-controls/allowed-domains-netset.yaml
-kubectl apply -f demo/20-egress-controls/azure-services-netset.yaml
-kubectl apply -f demo/20-egress-controls/azure-services.dns-policy.yaml
-kubectl apply -f demo/20-egress-controls/calico.global.dns-policy.yaml
-
-# test access to external domains
-kubectl -n hipstershop exec -t centos -- sh -c 'curl -m2 -sI google.com | grep -i http'
-kubectl -n hipstershop exec -t centos -- sh -c 'curl -m2 -sI myaccount.blob.core.windows.net 80'
-```
-
-Configure security alerts
-
-```bash
-kubectl apply -f demo/30-alerts
-```
-
-Configure threat intelligence feeds
-
-```bash
-kubectl apply -f demo/40-threatfeeds/feodo-threatfeed.yaml
-kubectl apply -f demo/40-threatfeeds/feodo-block-policy.yaml
-
-# test access to IP from the threatfeed list
-IP=$(kubectl get globalnetworkset -l threatfeed=feodo -ojson | jq '.items[] | .spec.nets[0]' | sed -e 's/^"//' -e 's/"$//' -e 's/\/32//')
-kubectl exec -t netshoot -- sh -c "nc -zv -w2 $IP 22"
-```
-
-## clean up demo and delete AKS clsuter
-
-```bash
-# delete apps
-kubectl delete -f demo/app
-
-# delete AKS cluster and resource group
-az aks delete -n $CLUSTER_NAME -g $RG --yes --no-wait
-az group delete --resource-group $RG --yes --no-wait
-```

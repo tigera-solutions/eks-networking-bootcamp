@@ -172,6 +172,9 @@ metadata:
   labels:
     app: facts
   namespace: catfacts
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: preserve_client_ip.enabled=true
 spec:
   ports:
   - name: "http"
