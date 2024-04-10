@@ -348,7 +348,7 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME_3=eks-ebpf
+   export CLUSTERNAME3=eks-ebpf
 
    # Persist for later sessions in case of disconnection.
    echo export CLUSTERNAME3=$CLUSTERNAME3 >> ~/labVars.env
