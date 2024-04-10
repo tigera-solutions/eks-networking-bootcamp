@@ -1,0 +1,22 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.allow-external-dns
+spec:
+  # requires security tier
+  tier: security
+  selector: "projectcalico.org/namespace in {'hipstershop','default'}"
+  order: 200
+  types:
+    - Egress
+  egress:
+  - action: Allow
+    protocol: UDP
+    source: {}
+    destination:
+      ports:
+      - '53'
+  - action: Allow
+    source: {}
+    destination:
+      selector: domain == "external"

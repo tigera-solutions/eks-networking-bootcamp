@@ -1,0 +1,18 @@
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalAlert
+metadata:
+  name: hipstershop.restricted.lateral.access
+spec:
+  description: "Alerts when pods with a specific label (app=paymentservice) accessed by other workloads outside of allowed namespaces"
+  summary: "[flows] [lateral movement] ${source_namespace}/${source_name_aggr} has accessed ${dest_namespace}/${dest_name_aggr} with label app=paymentservice"
+  severity: 100
+  period: 1m
+  lookback: 1m
+  dataSet: flows
+  query: '("dest_labels.labels"="app=paymentservice" AND "dest_namespace"="hipstershop") AND ("source_namespace"!="hipstershop" OR "source_labels.labels"!="app=checkoutservice") AND "proto"="tcp" AND (("action"="allow" AND ("reporter"="dst" OR "reporter"="src")) OR ("action"="deny" AND "reporter"="src"))'
+  aggregateBy: [source_namespace, source_name_aggr, dest_namespace, dest_name_aggr]
+  field: num_flows
+  metric: sum
+  condition: gt
+  threshold: 0

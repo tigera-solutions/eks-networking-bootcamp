@@ -1,0 +1,23 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: iis
+  namespace: default
+spec:
+  selector: run == 'iis'
+  order: 100
+  types:
+    - Ingress
+  ingress:
+    - action: Allow
+      protocol: TCP
+      source:
+        selector: app == 'netshoot'
+      destination:
+        ports:
+        - 80
+        - 443
+    - action: Deny
+      protocol: TCP
+      source: {}
+---

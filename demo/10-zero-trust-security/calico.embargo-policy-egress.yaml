@@ -1,0 +1,25 @@
+---
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: security.deny-embargo-egress
+spec:
+  tier: security
+  selector: "projectcalico.org/namespace in {'hipstershop','default'}"
+  order: 200
+  types:
+    - Ingress
+    - Egress
+  ingress:
+  - action: Deny
+    source:
+      selector: type == "embargo"
+  egress:
+  - action: Deny
+    source: {}
+    destination:
+      selector: type == "embargo"
+  # # Pass rule is needed if there is no pass policy downstream in this tier
+  # - action: Pass
+  #   source: {}
+  #   destination: {}

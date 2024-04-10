@@ -1,0 +1,16 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: platform.azure-services-access
+spec:
+  # requires platform tier
+  tier: platform
+  selector: "projectcalico.org/namespace in {'hipstershop','default'}"
+  order: 200
+  types:
+    - Egress
+  egress:
+  - action: Allow
+    source: {}
+    destination:
+      selector: domain == "azure-services"

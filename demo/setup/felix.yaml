@@ -1,0 +1,11 @@
+spec:
+  flowLogsFlushInterval: 10s
+  flowLogsFileAggregationKindForAllowed: 1
+  flowLogsCollectTcpStats: true
+  flowLogsEnableHostEndpoint: true
+  dnsLogsFlushInterval: 10s
+  logSeverityScreen: Info
+  captureRotationSeconds: 3600
+  l7LogsFlushInterval: 10s
+  l7LogsFileAggregationHTTPHeaderInfo: IncludeL7HTTPHeaderInfo
+  policySyncPathPrefix: /var/run/nodeagent

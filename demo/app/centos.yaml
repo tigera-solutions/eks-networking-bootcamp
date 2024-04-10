@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: centos
+  namespace: hipstershop
+  labels:
+    app: centos
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: centos
+    image: centos:latest
+    # Just spin & wait forever
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    resources: {}
+  nodeSelector:
+    kubernetes.io/os: linux

@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netshoot
+  namespace: default
+  labels:
+    app: netshoot
+spec:
+  restartPolicy: Always
+  containers:
+  - name: netshoot
+    image: nicolaka/netshoot:latest
+    # Just spin & wait forever
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    resources: {}
+  nodeSelector:
+    kubernetes.io/os: linux
