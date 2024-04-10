@@ -416,7 +416,7 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
      data:
        KUBERNETES_SERVICE_HOST: "${APISERVER_ADDR}"
        KUBERNETES_SERVICE_PORT: "${APISERVER_PORT}"
-     EOF  
+     EOF
      ```
 
    - Create the installation configuration.
