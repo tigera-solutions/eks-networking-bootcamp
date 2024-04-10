@@ -102,7 +102,7 @@ The following are the basic requirements to **start** the workshop.
    k9s version
    ```
 
-## EKS cluster with Azure CNI overlay and Calico Cloud for policy
+## EKS cluster with AWS VPC CNI overlay and Calico Cloud for policy
 
 In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html) option where each pod gets a routable IP assigned from the Amazon EKS VPC.
 
@@ -119,14 +119,14 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME_1=eks-vpc-cni-calico-policy
+   export CLUSTERNAME1=eks-vpc
    export REGION=ca-west-1
    export VERSION=1.28
    export INSTANCETYPE=m5.xlarge
 
    # Persist for later sessions in case of disconnection.
    echo "# Start Workshop Lab Params" > ~/labVars.env
-   echo export CLUSTERNAME_1=$CLUSTERNAME_1 >> ~/labVars.env
+   echo export CLUSTERNAME1=$CLUSTERNAME1 >> ~/labVars.env
    echo export REGION=$REGION >> ~/labVars.env
    echo export VERSION=$VERSION >> ~/labVars.env
    echo export INSTANCETYPE=$INSTANCETYPE >> ~/labVars.env
@@ -136,7 +136,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    eksctl create cluster \
-     --name $CLUSTERNAME_1 \
+     --name $CLUSTERNAME1 \
      --region $REGION \
      --version $VERSION \
      --node-type $INSTANCETYPE
@@ -146,7 +146,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    aws eks describe-cluster \
-     --name $CLUSTERNAME_1 \
+     --name $CLUSTERNAME1 \
      --region $REGION \
      --no-cli-pager \
      --output yaml
@@ -164,7 +164,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
    >```bash
    > source ~/labVars.env
    >
-   > aws eks update-kubeconfig --name $CLUSTERNAME_1 --region $REGION
+   > aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
    >```
 
 Once the EKS cluster is provisioned, the PODs will be networked using Amazon VPC CNI  with routable IPs. If you want to take advantage of advanced Calico security and observability capabilities, you can connect your cluster to Calico Cloud or install Calico Enterprise on it.
@@ -188,24 +188,17 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME_2=eks-windowns-vpc-cali
-   export REGION=ca-west-1
-   export VERSION=1.28
-   export INSTANCETYPE=m5.xlarge
+   export CLUSTERNAME2=eks-windows
 
    # Persist for later sessions in case of disconnection.
-   echo "# Start Workshop Lab Params" > ~/labVars.env
-   echo export CLUSTERNAME_2=$CLUSTERNAME_2 >> ~/labVars.env
-   echo export REGION=$REGION >> ~/labVars.env
-   echo export VERSION=$VERSION >> ~/labVars.env
-   echo export INSTANCETYPE=$INSTANCETYPE >> ~/labVars.env
+   echo export CLUSTERNAME2=$CLUSTERNAME2 >> ~/labVars.env
    ```
 
 2. Create the EKS cluster.
 
    ```bash
    eksctl create cluster \
-     --name $CLUSTERNAME_2 \
+     --name $CLUSTERNAME2 \
      --region $REGION \
      --version $VERSION \
      --node-type $INSTANCETYPE
@@ -215,7 +208,7 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    aws eks describe-cluster \
-     --name $CLUSTERNAME_2 \
+     --name $CLUSTERNAME2 \
      --region $REGION \
      --no-cli-pager \
      --output yaml
@@ -254,13 +247,13 @@ In this example EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.a
 
    ```bash
    eksctl create nodegroup \
-     --cluster=$CLUSTERNAME_2 \
+     --cluster=$CLUSTERNAME2 \
      --region=$REGION \
      --node-ami-family=WindowsServer2022CoreContainer
    ```
 
 7. Connect your cluster to Calico Cloud
-   
+
    [Connect AKS cluster to Calico Cloud](#connect-aks-cluster-to-calico-cloud) to install Calico plugin and connect the cluster to Calico Cloud management plane.
 
 ### Configure Windows HNS networking in Calico
@@ -355,18 +348,17 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME_3=eks-cali-cni
+   export CLUSTERNAME_3=eks-ebpf
 
    # Persist for later sessions in case of disconnection.
-   echo "# Start Workshop Lab Params" > ~/labVars.env
-   echo export CLUSTERNAME_3=$CLUSTERNAME_3 >> ~/labVars.env
+   echo export CLUSTERNAME3=$CLUSTERNAME3 >> ~/labVars.env
    ```
 
 2. Create the EKS cluster.
 
    ```bash
    eksctl create cluster \
-     --name $CLUSTERNAME_3 \
+     --name $CLUSTERNAME3 \
      --region $REGION \
      --version $VERSION \
      --without-nodegroup
@@ -451,8 +443,8 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
 6. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
 
    ```bash
-   eksctl create nodegroup $CLUSTERNAME_3-ng \
-     --cluster $CLUSTERNAME_3 \
+   eksctl create nodegroup $CLUSTERNAME3-ng \
+     --cluster $CLUSTERNAME3 \
      --region $REGION \
      --node-type $INSTANCETYPE \
      --nodes 2 \
