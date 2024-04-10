@@ -423,28 +423,15 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
 
      ```yaml
      kubectl apply -f - << EOF
-     # This section includes base Calico installation configuration.
-     # For more information, see: https://docs.tigera.io/calico/latest/reference/     installation/api#operator.tigera.io/v1.Installation
      apiVersion: operator.tigera.io/v1
      kind: Installation
      metadata:
        name: default
      spec:
-       kubernetesProvider: EKS
-       # Configures Calico networking.
        calicoNetwork:
          linuxDataplane: BPF
-         # Note: The ipPools section cannot be modified post-install.
-         ipPools:
-         - blockSize: 26
-           cidr: 192.168.0.0/16
-           encapsulation: VXLANCrossSubnet
-           natOutgoing: Enabled
-           nodeSelector: all()
        variant: Calico
      ---
-     # This section configures the Calico API server.
-     # For more information, see: https://docs.tigera.io/calico/latest/reference/     installation/api#operator.tigera.io/v1.APIServer
      apiVersion: operator.tigera.io/v1
      kind: APIServer
      metadata:
@@ -453,7 +440,15 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
      EOF
      ```
 
-5. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
+5. Disable the `kube-proxy`.
+
+   You can disable kube-proxy, reversibly, by adding a node selector that doesn't match and nodes to kube-proxy's DaemonSet, for example:
+
+   ```bash
+   kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
+   ```
+
+6. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
 
    ```bash
    eksctl create nodegroup $CLUSTERNAME_3-ng \
