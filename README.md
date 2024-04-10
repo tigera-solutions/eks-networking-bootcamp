@@ -456,16 +456,14 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
 5. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
 
    ```bash
-   eksctl create nodegroup $CLUSTERNAME_2-ng \
-     --cluster $CLUSTERNAME_2 \
+   eksctl create nodegroup $CLUSTERNAME_3-ng \
+     --cluster $CLUSTERNAME_3 \
      --region $REGION \
      --node-type $INSTANCETYPE \
      --nodes 2 \
      --nodes-min 0 \
      --nodes-max 2 \
-     --max-pods-per-node 100 \
-     --ssh-access \
-     --ssh-public-key $KEYPAIRNAME
+     --max-pods-per-node 100
    ```
 
 ### Connect your cluster to Calico Cloud
