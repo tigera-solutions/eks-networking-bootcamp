@@ -1,0 +1,32 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: platform.worker
+  namespace: catfacts
+spec:
+  tier: platform
+  order: 120
+  selector: app == 'worker'
+  types:
+  - Egress
+  egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      selector: app == 'facts'
+      ports:
+      - 80
+  - action: Allow
+    protocol: TCP
+    destination:
+      domains:
+      - dog.ceo
+      - catfact.ninja
+      ports:
+      - 443
+  - action: Allow
+    protocol: TCP
+    destination:
+      selector: app == 'db'
+      ports:
+      - 3306

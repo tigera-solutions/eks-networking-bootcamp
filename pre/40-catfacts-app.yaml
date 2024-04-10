@@ -1,0 +1,183 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: catfacts
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+  namespace: catfacts
+type: Opaque
+data:
+  password: VGlnZXJhQDEyMw==
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+  namespace:  catfacts
+spec:
+  selector:
+    matchLabels:
+      app: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - image: mysql:8.2.0
+        name: mysql
+        env:
+        - name: MYSQL_RANDOM_ROOT_PASSWORD
+          value: '1'
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        - name: MYSQL_USER
+          value: user
+        - name: MYSQL_DATABASE
+          value: db
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "50m"
+          limits:
+            memory: "1024Mi"
+            cpu: "200m"
+      volumes:
+      - name: mysql-storage
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    app: db
+  namespace: catfacts
+spec:
+  type: ClusterIP
+  ports:
+  - name: "db-mysql-port"
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+  namespace: catfacts
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - image: regisftm/worker:v1.0.1
+        name: worker
+        env:
+        - name: DB_HOST
+          value: db
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        - name: DB_USER
+          value: user
+        - name: DB_NAME
+          value: db
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: facts
+  labels:
+    app: facts
+  namespace: catfacts
+spec:
+  selector:
+    matchLabels:
+      app: facts
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: facts
+    spec:
+      containers:
+      - image: regisftm/facts:v1.0.1
+        name: facts
+        env:
+        - name: DB_HOST
+          value: db
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        - name: DB_USER
+          value: user
+        - name: DB_NAME
+          value: db
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: facts
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: facts
+  labels:
+    app: facts
+  namespace: catfacts
+spec:
+  ports:
+  - name: "http"
+    port: 80
+    targetPort: 80
+  selector:
+    app: facts
+  type: LoadBalancer
+  externalTrafficPolicy: Local

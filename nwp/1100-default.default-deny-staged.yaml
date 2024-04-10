@@ -1,0 +1,11 @@
+apiVersion: projectcalico.org/v3
+kind: StagedGlobalNetworkPolicy
+metadata:
+  name: default.default-deny
+spec:
+  tier: default
+  order: 1100
+  namespaceSelector: kubernetes.io/metadata.name == "catfacts"
+  types:
+  - Ingress
+  - Egress

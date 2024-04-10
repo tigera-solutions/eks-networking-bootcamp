@@ -1,0 +1,19 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: platform.db
+  namespace: catfacts
+spec:
+  tier: platform
+  order: 100
+  selector: app == 'db'
+  types:
+  - Ingress
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      selector: app == "worker" || app == "facts"
+    destination:
+      ports:
+        - '3306'
