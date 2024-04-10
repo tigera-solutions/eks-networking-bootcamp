@@ -441,7 +441,7 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
            encapsulation: VXLANCrossSubnet
            natOutgoing: Enabled
            nodeSelector: all()
-       variante: Calico
+       variant: Calico
      ---
      # This section configures the Calico API server.
      # For more information, see: https://docs.tigera.io/calico/latest/reference/     installation/api#operator.tigera.io/v1.APIServer
