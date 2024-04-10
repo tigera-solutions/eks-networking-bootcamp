@@ -407,7 +407,7 @@ In this example EKS cluster is provisioned with Calico CNI where each pod gets n
    - Configure kubernetes-services-endpoint configmap
   
      ```yaml
-     kubectl apply -f - << EOF
+     kubectl apply -f - <<-EOF
      kind: ConfigMap
      apiVersion: v1
      metadata:
