@@ -154,14 +154,14 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
    kubectl get nodes
    ```
 
-   > [!TIP]
-   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-   >
-   >```bash
-   > source ~/labVars.env
-   >
-   > aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
-   >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
+>```
 
 Once the EKS cluster is provisioned, the PODs will be networked using Amazon VPC CNI  with routable IPs. If you want to take advantage of advanced Calico security and observability capabilities, you can connect your cluster to Calico Cloud or install Calico Enterprise on it.
 
