@@ -416,14 +416,14 @@ In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To in
    kubectl get nodes
    ```
 
-   > [!TIP]
-   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-   >
-   >```bash
-   > source ~/labVars.env
-   >
-   > aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
-   >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
+>```
 
 4. Uninstall the AWS VPC CNI and install **Calico CNI**.
 
@@ -507,7 +507,7 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
    ```bash
    eksctl create cluster \
-     --name $CLUSTERNAME2 \
+     --name $CLUSTERNAME3 \
      --region $REGION \
      --version $VERSION \
      --node-type $INSTANCETYPE
@@ -519,14 +519,14 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
      kubectl get nodes
      ```
 
-     > [!TIP]
-     > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-     >
-     >```bash
-     > source ~/labVars.env
-     >
-     > aws eks update-kubeconfig --name $CLUSTERNAME_1 --region $REGION
-     >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME3 --region $REGION
+>```
 
 3. [Enable Windows support for your Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html)
 
@@ -546,7 +546,7 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
    ```bash
    eksctl create nodegroup \
-     --cluster=$CLUSTERNAME2 \
+     --cluster=$CLUSTERNAME3 \
      --region=$REGION \
      --node-ami-family=WindowsServer2022CoreContainer
    ```
@@ -556,7 +556,7 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
    ```bash
    APISERVER_ADDR=$(kubectl get configmap -n kube-system kube-proxy -o yaml | grep server |  awk -F "/" '{print $3}')
    APISERVER_PORT=$(kubectl get endpoints kubernetes -ojsonpath='{.subsets[0].ports[0].port}')
-   SERVICE_CIDR=$(aws eks describe-cluster --name $CLUSTERNAME2 --region $REGION --query 'cluster.kubernetesNetworkConfig.serviceIpv4Cidr' --no-cli-pager | tr -d '"')
+   SERVICE_CIDR=$(aws eks describe-cluster --name $CLUSTERNAME3 --region $REGION --query 'cluster.kubernetesNetworkConfig.serviceIpv4Cidr' --no-cli-pager | tr -d '"')
    ```
 
 6. Configure kubernetes-services-endpoint configmap
