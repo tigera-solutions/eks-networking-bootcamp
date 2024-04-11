@@ -167,7 +167,7 @@ Once the EKS cluster is provisioned, the PODs will be networked using Amazon VPC
 
 ### Connect your cluster to Calico Cloud
 
-Follow instructions in the official [Calico Cloud documentation](https://docs.tigera.io/calico-cloud/about) to [connect your AKS cluster to Calico Cloud](https://docs.tigera.io/calico-cloud/get-started/connect/) management plane.
+Follow instructions in the official [Calico Cloud documentation](https://docs.tigera.io/calico-cloud/about) to [connect your EKS cluster to Calico Cloud](https://docs.tigera.io/calico-cloud/get-started/connect/) management plane.
 
 ### Enable eBPF on the EKS cluster
 
@@ -195,20 +195,20 @@ Follow instructions in the official [Calico Cloud documentation](https://docs.ti
      EOF
      ```
 
-2. Disable `kube-proxy`
-
-   In eBPF mode Calico Cloud replaces kube-proxy so it wastes resources (and reduces performance) to run both. Let's disable kube-proxy.
-
-   ```bash
-   kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
-   ```
-
-3. Enable eBPF mode
+2. Enable eBPF mode
 
    To enable eBPF mode, change the spec.calicoNetwork.linuxDataplane parameter in the operator's Installation resource to "BPF".
 
    ```bash
    kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF"}}}'
+   ```
+
+3. Disable `kube-proxy`
+
+   In eBPF mode Calico Cloud replaces kube-proxy so it wastes resources (and reduces performance) to run both. Let's disable kube-proxy.
+
+   ```bash
+   kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
    ```
 
 4. Enable DSR mode
@@ -220,6 +220,13 @@ Follow instructions in the official [Calico Cloud documentation](https://docs.ti
    ```bash
    kubectl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
    ```
+
+If you want to learn more about eBPF dataplane, here are some links:
+
+- [Introducing the Calico eBPF dataplane](https://www.tigera.io/blog/introducing-the-calico-ebpf-dataplane/)
+- [eBPF Explained: Use Cases, Concepts, and Architecture](https://www.tigera.io/learn/guides/ebpf/)
+- [eBPF XDP: The Basics and a Quick Tutorial](https://www.tigera.io/learn/guides/ebpf/ebpf-xdp/)
+- [Get started with XDP](https://developers.redhat.com/blog/2021/04/01/get-started-with-xdp)
 
 ## Module 3: Enforce Workload-level Network Policy
 
@@ -359,8 +366,18 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    source ~/labVars.env
    eksctl delete cluster --name $CLUSTERNAME1 --region $REGION
    ```
+---
 
-## Module 4:  EKS with Calico CNI
+**Congratulation! You finish the Amazon EKS Networking Bootcamp.**
+
+If you have time and still willing to learn, try the following bonus modules!
+
+- [Bonus Module 1: EKS with Calico CNI]()
+- [Bonus Module 2: EKS with Windows nodegroup and Calico for Policy]()
+
+---
+
+## Bonus Module 1: EKS with Calico CNI
 
 In this module EKS cluster is provisioned with AWS VPC CNI. To install Calico CNI we will remove the AWS VPC CNI and install Calico on the EKS cluster. Calico will be responsible for Policy, IPAM and CNI.
 
@@ -463,7 +480,7 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    eksctl delete cluster --name $CLUSTERNAME2 --region $REGION
    ```
 
-## Module 5: EKS with Windows nodegroup and Calico for Policy
+## Bonus Module 2: EKS with Windows nodegroup and Calico for Policy
 
 In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html) option where each pod gets a routable IP assigned from the Amazon EKS VPC. A Windows nodegroup is also added to the cluster. Calico plugin is installed for network policy enforcement.
 
@@ -583,9 +600,3 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    source ~/labVars.env
    eksctl delete cluster --name $CLUSTERNAME3 --region $REGION
    ```
-
----
-
-**Congratulation! You finish the Amazon EKS Networking Bootcamp.**
-
----
