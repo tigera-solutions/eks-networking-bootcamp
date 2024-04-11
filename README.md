@@ -31,8 +31,6 @@ The geeky details of what you get:
 
 Calico as CNI, IPAM and network policy enforcement unlock several other benefits on EKS, such as eliminating the problem with ip exhaution and using Calico Egress Gateway, etc.
 
-EKS provides several different networking and policy options. The list below mostly focuses on Calico related options.
-
 ### Calico networking options for EKS
 
 Calico CNI is designed to allow users to choose the best dataplane option that suits their requirements. Calico supports several dataplanes:
@@ -52,7 +50,7 @@ The following are the basic requirements to **start** the workshop.
 
 - AWS Account [AWS Console](https://portal.aws.amazon.com)
 - AWS CloudShell [https://portal.aws.amazon.com/cloudshell](https://portal.aws.amazon.com/cloudshell)
-- Amazon EKS Cluster - to be created later!
+- Amazon EKS Cluster - to be created later in this bootcamp.
 
 ### Instructions
 
@@ -70,8 +68,10 @@ The following are the basic requirements to **start** the workshop.
 4. Configure the kubectl autocomplete.
 
    ```bash
-   source <(kubectl completion bash) # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
-   echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
+   # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
+   source <(kubectl completion bash) 
+   # add autocomplete permanently to your bash shell.
+   echo "source <(kubectl completion bash)" >> ~/.bashrc 
    ```
 
    You can also use a shorthand alias for kubectl that also works with completion:
@@ -118,7 +118,7 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
 
    > [!NOTE]
    > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
+
    > ```console
    > source ~/workshopvars.env
    > ```
