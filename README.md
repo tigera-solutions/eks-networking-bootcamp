@@ -110,7 +110,7 @@ The following are the basic requirements to **start** the workshop.
 
 ## Module 2: EKS cluster with Calico eBPF mode
 
-This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html), connects it to Calico Cloud, and enables Calico eBPF mode.
+This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html), connects it to Calico Cloud, and enables Calico eBPF mode. Learn more about Calico eBPF dataplane [here](https://www.tigera.io/blog/introducing-the-calico-ebpf-dataplane).
 
 ### Create an EKS cluster with Amazon VPC CNI
 
@@ -452,7 +452,7 @@ In this module EKS cluster is provisioned with AWS VPC CNI. To install Calico CN
 
 With Calico CNI you avoid dependencies on AWS VPC CNI. Allocating pod IPs from the underlying VPC is problematic due to IP address range exhaustion challenges, or if the maximum number of pods supported per node by the Amazon VPC CNI plugin is not sufficient for your needs, we recommend using Calico networking in cross-subnet overlay mode. Pod IPs will not be routable outside of the cluster, but you can scale the cluster up to the limits of Kubernetes with no dependencies on the underlying cloud network.
 
-### Clean up cluste 2
+### Clean up Cluster 2
 
 Let's delete the application to release the loadbalancer and then, the EKS cluster.
 
