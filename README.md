@@ -6,7 +6,7 @@ This guide provides examples of different networking options for EKS cluster wit
 
 Amazon EKS runs upstream Kubernetes, so you can install alternate compatible CNI plugins to Amazon EC2 nodes in your cluster.
 
-> [!CAUTION]
+> [!IMPORTANT]
 > If you have Fargate nodes in your cluster, the Amazon VPC CNI plugin for Kubernetes is already on your Fargate nodes. It's the only CNI plugin you can use with Fargate nodes. An attempt to install an alternate CNI plugin on Fargate nodes fails.
 
 Amazon EKS maintains relationships with a network of partners that offer support for alternate compatible CNI plugins. For this workshop we will focus on Calico options for EKS.
