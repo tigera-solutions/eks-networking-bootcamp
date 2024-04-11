@@ -389,7 +389,7 @@ In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To in
 > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
 >
 > ```console
-> source ~/workshopvars.env
+> source ~/labVars.env
 > ```
 
    ```bash
