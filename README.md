@@ -413,7 +413,7 @@ In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To in
 3. Verify you have API access to your new EKS cluster
 
    ```bash
-   kubectl get nodes
+   kubectl get pod -A
    ```
 
 > [!TIP]
