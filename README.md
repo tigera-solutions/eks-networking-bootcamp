@@ -120,7 +120,7 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
    > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
 
    > ```console
-   > source ~/workshopvars.env
+   > source ~/labVars.env
    > ```
 
    ```bash
@@ -131,7 +131,7 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
    export INSTANCETYPE=m5.xlarge
 
    # Persist for later sessions in case of disconnection.
-   echo "# Start Workshop Lab Params" > ~/labVars.env
+   echo "# Start EKS Bootcamp Lab Params" > ~/labVars.env
    echo export CLUSTERNAME1=$CLUSTERNAME1 >> ~/labVars.env
    echo export REGION=$REGION >> ~/labVars.env
    echo export VERSION=$VERSION >> ~/labVars.env
