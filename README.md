@@ -1,6 +1,6 @@
 # Amazon EKS Networking Bootcamp
 
-This repository provides a guide for the Amazon EKS Networking Bootcamp. In this EKS-focused networking bootcamp, you'll explore various networking options and address IP exhaustion issues. You'll also learn how to write and enforce workload-level network policies, ensuring maximum security for your applications.
+This repository serves as a guide for the Amazon EKS Networking Bootcamp. Throughout this bootcamp, which focuses on EKS networking, you'll delve into different networking solutions and tackle IP exhaustion concerns. Additionally, you'll gain proficiency in crafting and enforcing network policies at the workload level, safeguarding your applications with enhanced security measures.
 
 ## Networking and Policy options for Amazon EKS with Calico
 
@@ -29,24 +29,24 @@ The geeky details of what you get:
 | :----: | :----: | :----: | :-----: | :-----: | :--------: |
 | Calico | Calico | Calico |  VXLAN  | Calico  | Kubernetes |
 
-Calico as CNI, IPAM and network policy enforcement unlock several other benefits on EKS, such as eliminating the problem with ip exhaution and using Calico Egress Gateway, etc.
+Deploying Calico as the Container Network Interface (CNI), IP Address Management (IPAM), and for network policy enforcement brings numerous advantages to EKS. It not only resolves issues related to IP exhaustion but also enables additional features like the Calico Egress Gateway.
 
-### Calico networking options for EKS
+#### Calico networking options for EKS
 
-Calico CNI is designed to allow users to choose the best dataplane option that suits their requirements. Calico supports several dataplanes:
+Calico CNI is designed to offer users the flexibility to select the most suitable dataplane option according to their needs. Calico supports several dataplanes, including:
 
-- Standard Linux (Iptables)
-- [eBPF](https://docs.tigera.io/calico/latest/operations/ebpf/)
-- [Windows HNS](https://docs.tigera.io/calico/latest/getting-started/kubernetes/windows-calico/)
-- [VPP](https://docs.tigera.io/calico/latest/getting-started/kubernetes/vpp/)
+- Standard Linux (iptables)
+- [eBPF (Extended Berkeley Packet Filter)](https://docs.tigera.io/calico/latest/operations/ebpf/)
+- [Windows HNS (Host Networking Service)](https://docs.tigera.io/calico/latest/getting-started/kubernetes/windows-calico/)
+- [VPP (Vector Packet Processing )](https://docs.tigera.io/calico/latest/getting-started/kubernetes/vpp/)
 
 ## Module 1: Calico Cloud on EKS - Workshop Environment Preparation
 
-This workshop provides a few examples to install Calico in EKS and configure different dataplane options. But first, let's configure our AWS CloudShell.
+Before diving into the installation of Calico in EKS and configuring various dataplane options, let's first set up our AWS CloudShell environment for seamless execution of commands and configurations.
 
 ### Getting Started with AWS CloudShell
 
-The following are the basic requirements to **start** the workshop.
+To begin the bootcamp, you'll need to meet the following basic requirements:
 
 - AWS Account [AWS Console](https://portal.aws.amazon.com)
 - AWS CloudShell [https://portal.aws.amazon.com/cloudshell](https://portal.aws.amazon.com/cloudshell)
@@ -55,6 +55,7 @@ The following are the basic requirements to **start** the workshop.
 ### Instructions
 
 1. Login to AWS Portal at <https://portal.aws.amazon.com>.
+
 2. Open the AWS CloudShell.
 
    ![cloudshell](https://github.com/tigera-solutions/eks-workshop-prep/assets/104035488/a1f0b555-018d-488f-8d8c-975b5c391ede)
@@ -116,12 +117,12 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-
-   > ```console
-   > source ~/labVars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/labVars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
@@ -368,9 +369,9 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    ```
 ---
 
-**:tada: Congratulation! You finish the Amazon EKS Networking Bootcamp.**
+**:tada: Congratulations! You've completed the Amazon EKS Networking Bootcamp.**
 
-If you have time and still willing to learn, try the following bonus modules!
+If you have the time and are still eager to learn, consider exploring the following bonus modules!
 
 - [Bonus Module 1: EKS with Calico CNI](#bonus-module-1-eks-with-calico-cni)
 - [Bonus Module 2: EKS with Windows nodegroup and Calico for Policy](#bonus-module-2-eks-with-windows-nodegroup-and-calico-for-policy)
