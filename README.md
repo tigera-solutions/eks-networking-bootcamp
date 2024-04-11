@@ -1,6 +1,6 @@
 # Amazon EKS Networking Bootcamp
 
-This guide provides examples of different networking options for EKS cluster with Calico.
+This repository provides a guide for the Amazon EKS Networking Bootcamp. In this EKS-focused networking bootcamp, you'll explore various networking options and address IP exhaustion issues. You'll also learn how to write and enforce workload-level network policies, ensuring maximum security for your applications.
 
 ## Networking and Policy options for Amazon EKS with Calico
 
