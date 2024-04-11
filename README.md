@@ -488,12 +488,12 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
-   > ```console
-   > source ~/labVars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/labVars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
