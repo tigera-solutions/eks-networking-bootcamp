@@ -164,7 +164,7 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
 > aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
 >```
 
-Once the EKS cluster is provisioned, the PODs will be networked using Amazon VPC CNI  with routable IPs. If you want to take advantage of advanced Calico security and observability capabilities, you can connect your cluster to Calico Cloud or install Calico Enterprise on it.
+After provisioning the EKS cluster, the PODs will be networked using Amazon VPC CNI, enabling routable IPs. For enhanced security and observability features offered by Calico, you have the option to connect your cluster to Calico Cloud or install Calico Enterprise on it.
 
 ### Connect your cluster to Calico Cloud
 
@@ -231,7 +231,7 @@ If you want to learn more about eBPF dataplane, here are some links:
 
 ## Module 3: Enforce Workload-level Network Policy
 
-During this workshop, we will use the `Cat Facts Application` as an example to work on. In this module, we will learn how to use Calico to implement the workload-level network policies for each of the workloads.
+During this bootcamp, we will use the `Cat Facts Application` as an example to work on. In this module, we will learn how to use Calico to implement the workload-level network policies for each of the workloads.
 
 1. Install the example application stack:
 
@@ -245,7 +245,7 @@ Included in the `pre` folder, there is the application that will be used in the 
 
 ![catfacts-application](https://github.com/tigera-solutions/cc-aks-zero-trust-workshop/assets/104035488/868c7ccf-e215-41d6-91ab-635832700c50)
 
-There are also other objects that will be created. We will learn about them later in the workshop.
+There are also other objects that will be created. We will learn about them later.
 
 > [!IMPORTANT]
 > Wait until all the pods are up and running to move to the next step.
@@ -353,7 +353,7 @@ If you create all the policies correctly, at some point, you will start seeing z
 
 ### Clean up
 
-Let's delete the application to release the loadbalancer and then, the EKS cluster.
+First, we should delete the application to release the load balancer resource associated with it. Once the application is removed, we can proceed with deleting the EKS cluster.
 
 1. Delete the applications stack to clean up any loadbalancer services.
 
@@ -367,6 +367,7 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    source ~/labVars.env
    eksctl delete cluster --name $CLUSTERNAME1 --region $REGION
    ```
+
 ---
 
 **:tada: Congratulations! You've completed the Amazon EKS Networking Bootcamp.**
@@ -380,16 +381,16 @@ If you have the time and are still eager to learn, consider exploring the follow
 
 ## Bonus Module 1: EKS with Calico CNI
 
-In this module EKS cluster is provisioned with AWS VPC CNI. To install Calico CNI we will remove the AWS VPC CNI and install Calico on the EKS cluster. Calico will be responsible for Policy, IPAM and CNI.
+In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To install Calico CNI, we'll remove the AWS VPC CNI and install Calico on the EKS cluster. With Calico in place, it will handle Policy, IPAM, and CNI responsibilities.
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
-   > ```console
-   > source ~/workshopvars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/workshopvars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
@@ -426,8 +427,7 @@ In this module EKS cluster is provisioned with AWS VPC CNI. To install Calico CN
 
 4. Uninstall the AWS VPC CNI and install **Calico CNI**.
 
-   To install Calico CNI we need first remove the AWS VPC CNI and then install it.
-   For further information about Calico CNI installation on AWS EKS, please refer to the [Project Calico documentation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/managed-public-cloud/eks)
+   To install Calico CNI, the first step is to remove the AWS VPC CNI, and then proceed with the installation of Calico. For further information about Calico CNI installation on AWS EKS, please refer to the [Project Calico documentation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/managed-public-cloud/eks)
 
    - Uninstall AWS VPN CNI
 
@@ -472,7 +472,8 @@ With Calico CNI you avoid dependencies on AWS VPC CNI. Allocating pod IPs from t
 
 ### Clean up Cluster 2
 
-Let's delete the application to release the loadbalancer and then, the EKS cluster.
+> [!IMPORTANT]
+> Before deleting the EKS cluster, it's essential to uninstall any sample application and release the load balancer resources allocated to it. This ensures that no resources are left dangling and allows for a clean deletion of the cluster.
 
 1. Delete EKS cluster.
 
@@ -593,7 +594,8 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
 ### Clean up Cluster 3
 
-Let's delete the application to release the loadbalancer and then, the EKS cluster.
+> [!IMPORTANT]
+> Before deleting the EKS cluster, it's essential to uninstall any sample application and release the load balancer resources allocated to it. This ensures that no resources are left dangling and allows for a clean deletion of the cluster.
 
 1. Delete EKS cluster.
 
