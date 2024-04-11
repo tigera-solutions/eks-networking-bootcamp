@@ -368,12 +368,12 @@ Let's delete the application to release the loadbalancer and then, the EKS clust
    ```
 ---
 
-**Congratulation! You finish the Amazon EKS Networking Bootcamp.**
+**:tada: Congratulation! You finish the Amazon EKS Networking Bootcamp.**
 
 If you have time and still willing to learn, try the following bonus modules!
 
-- [Bonus Module 1: EKS with Calico CNI]()
-- [Bonus Module 2: EKS with Windows nodegroup and Calico for Policy]()
+- [Bonus Module 1: EKS with Calico CNI](#bonus-module-1-eks-with-calico-cni)
+- [Bonus Module 2: EKS with Windows nodegroup and Calico for Policy](#bonus-module-2-eks-with-windows-nodegroup-and-calico-for-policy)
 
 ---
 
