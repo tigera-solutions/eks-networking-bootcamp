@@ -125,7 +125,7 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME1=eks-vpc
+   export CLUSTERNAME1=eks-calico-ebpf
    export REGION=us-west-2
    export VERSION=1.28
    export INSTANCETYPE=m5.xlarge
