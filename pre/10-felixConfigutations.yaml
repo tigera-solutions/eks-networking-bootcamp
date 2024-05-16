@@ -3,9 +3,10 @@ kind: FelixConfiguration
 metadata:
   name: default
 spec:
-  flowLogsFlushInterval: 15s
+  flowLogsFlushInterval: 10s
   flowLogsFileAggregationKindForAllowed: 1
   flowLogsEnableNetworkSets: true
-  dnsLogsFlushInterval: 15s
+  dnsLogsFlushInterval: 10s
   captureRotationSeconds: 300
   policySyncPathPrefix: /var/run/nodeagent
+  flowLogsCollectTcpStats: true

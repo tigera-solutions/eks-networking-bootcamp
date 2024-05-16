@@ -111,24 +111,24 @@ To begin the bootcamp, you'll need to meet the following basic requirements:
 
 ## Module 2: EKS cluster with Calico eBPF mode
 
-This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html), connects it to Calico Cloud, and enables Calico eBPF mode. Learn more about Calico eBPF dataplane [here](https://www.tigera.io/blog/introducing-the-calico-ebpf-dataplane).
+This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html) and connects it to Calico Cloud.
 
 ### Create an EKS cluster with Amazon VPC CNI
 
 1. Define the environment variables to be used by the resources definition.
 
-> [!NOTE]
-> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
->
-> ```console
-> source ~/labVars.env
-> ```
+   > [!NOTE]
+   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+   >
+   > ```console
+   > source ~/labVars.env
+   > ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME1=eks-calico-ebpf
+   export CLUSTERNAME1=eks-calico
    export REGION=us-west-2
-   export VERSION=1.28
+   export VERSION=1.29
    export INSTANCETYPE=m5.xlarge
 
    # Persist for later sessions in case of disconnection.
@@ -155,79 +155,20 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
    kubectl get nodes
    ```
 
-> [!TIP]
-> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
->
->```bash
-> source ~/labVars.env
->
-> aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
->```
+   > [!TIP]
+   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+   >
+   >```bash
+   > source ~/labVars.env
+   >
+   > aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
+   >```
 
 After provisioning the EKS cluster, the PODs will be networked using Amazon VPC CNI, enabling routable IPs. For enhanced security and observability features offered by Calico, you have the option to connect your cluster to Calico Cloud or install Calico Enterprise on it.
 
 ### Connect your cluster to Calico Cloud
 
 Follow instructions in the official [Calico Cloud documentation](https://docs.tigera.io/calico-cloud/about) to [connect your EKS cluster to Calico Cloud](https://docs.tigera.io/calico-cloud/get-started/connect/) management plane.
-
-### Enable eBPF on the EKS cluster
-
-1. Configure Calico Cloud to talk directly to the API server
-
-   - Get config values from EKS cluster settings
-
-     ```bash
-     APISERVER_ADDR=$(kubectl get configmap -n kube-system kube-proxy -o yaml | grep   server |  awk -F "/" '{print $3}')
-     APISERVER_PORT=$(kubectl get endpoints kubernetes -ojsonpath='{.subsets[0].ports  [0].port}')
-     ```
-
-   - Configure kubernetes-services-endpoint configmap
-  
-     ```yaml
-     kubectl apply -f - <<-EOF
-     kind: ConfigMap
-     apiVersion: v1
-     metadata:
-       name: kubernetes-services-endpoint
-       namespace: tigera-operator
-     data:
-       KUBERNETES_SERVICE_HOST: "${APISERVER_ADDR}"
-       KUBERNETES_SERVICE_PORT: "${APISERVER_PORT}"
-     EOF
-     ```
-
-2. Enable eBPF mode
-
-   To enable eBPF mode, change the spec.calicoNetwork.linuxDataplane parameter in the operator's Installation resource to "BPF".
-
-   ```bash
-   kubectl patch installation.operator.tigera.io default --type merge -p '{"spec":{"calicoNetwork":{"linuxDataplane":"BPF"}}}'
-   ```
-
-3. Disable `kube-proxy`
-
-   In eBPF mode Calico Cloud replaces kube-proxy so it wastes resources (and reduces performance) to run both. Let's disable kube-proxy.
-
-   ```bash
-   kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
-   ```
-
-4. Enable DSR mode
-
-   Direct return mode skips a hop through the network for traffic to services (such as node ports) from outside the cluster. This reduces latency and CPU overhead but it requires the underlying network to allow nodes to send traffic with each other's IPs. In AWS, this requires all your nodes to be in the same subnet and for the source/dest check to be disabled.
-
-   DSR mode is disabled by default; to enable it, set the BPFExternalServiceMode Felix configuration parameter to "DSR". This can be done with kubectl:
-
-   ```bash
-   kubectl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
-   ```
-
-If you want to learn more about eBPF dataplane, here are some links:
-
-- [Introducing the Calico eBPF dataplane](https://www.tigera.io/blog/introducing-the-calico-ebpf-dataplane/)
-- [eBPF Explained: Use Cases, Concepts, and Architecture](https://www.tigera.io/learn/guides/ebpf/)
-- [eBPF XDP: The Basics and a Quick Tutorial](https://www.tigera.io/learn/guides/ebpf/ebpf-xdp/)
-- [Get started with XDP](https://developers.redhat.com/blog/2021/04/01/get-started-with-xdp)
 
 ## Module 3: Enforce Workload-level Network Policy
 
@@ -340,16 +281,16 @@ Calico Security Policies provide a richer set of policy capabilities than the na
 
 3. Now that you have learned how to create policies using Calico Cloud UI, go ahead and create microsegmentation policies for the `worker` workload.
 
-> [!TIP]
->
-> - Look into the Cat Facts application diagram to figure out all the communications to and from the `worker` microservice.
-> - You can use the `Recommend a Policy` feature as well. Don't forget to edit the recommendations to make it as granular as possible, like restricting the domain names of the API's that the worker needs to communicate with (`dog.ceo` and `catfact.ninja`).
+   > [!TIP]
+   >
+   > - Look into the Cat Facts application diagram to figure out all the communications to and from the `worker` microservice.
+   > - You can use the `Recommend a Policy` feature as well. Don't forget to edit the recommendations to make it as granular as possible, like restricting the domain names of the API's that the worker needs to communicate with (`dog.ceo` and `catfact.ninja`).
 
-If you create all the policies correctly, at some point, you will start seeing zero traffic being denied by your default-deny staged policy. At that point, you can go ahead and enforce the default-deny policy. Voilà! The `catfacts` namespace is now secure.
+   If you create all the policies correctly, at some point, you will start seeing zero traffic being denied by your default-deny staged policy. At that point, you can go ahead and enforce the default-deny policy. Voilà! The `catfacts` namespace is now secure.
 
-> [!TIP]
->
-> - After enforcing the default-deny policy, if you need to troubleshoot, use the Service Graph or the Flow Visualizations tools to see what traffic is being blocked.
+   > [!TIP]
+   >
+   > - After enforcing the default-deny policy, if you need to troubleshoot, use the Service Graph or the Flow Visualizations tools to see what traffic is being blocked.
 
 ### Clean up
 
@@ -379,28 +320,31 @@ If you have the time and are still eager to learn, consider exploring the follow
 
 ---
 
-## Bonus Module 1: EKS with Calico CNI
+## Bonus Module 1: EKS with Calico CNI in eBPF mode
 
-In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To install Calico CNI, we'll remove the AWS VPC CNI and install Calico on the EKS cluster. With Calico in place, it will handle Policy, IPAM, and CNI responsibilities.
+In this module, the EKS cluster is provisioned and configured to use Calico CNI in eBPF mode. With Calico in place, it will handle Policy, IPAM, and CNI responsibilities.
 
 1. Define the environment variables to be used by the resources definition.
 
-> [!NOTE]
-> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
->
-> ```console
-> source ~/labVars.env
-> ```
+   > [!NOTE]
+   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+   >
+   > ```console
+   > source ~/labVars.env
+   > ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
-   export CLUSTERNAME2=eks-calico
+   export CLUSTERNAME2=eks-calico-ebpf
 
    # Persist for later sessions in case of disconnection.
    echo export CLUSTERNAME2=$CLUSTERNAME2 >> ~/labVars.env
    ```
 
 2. Create the EKS cluster.
+
+   > [!NOTE]
+   > If you intend to use `Wireguard` based encryption to security pod-to-pod communications, the EKS cluster must be provisioned to use AMI that includes `Wireguard` bits. One of such AMI's is `Bottlerocket` that is used in this example.
 
    ```bash
    eksctl create cluster \
@@ -416,29 +360,29 @@ In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To in
    kubectl get pod -A
    ```
 
-> [!TIP]
-> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
->
->```bash
-> source ~/labVars.env
->
-> aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
->```
+   > [!TIP]
+   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+   >
+   >```bash
+   > source ~/labVars.env
+   >
+   > aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
+   >```
 
 4. Uninstall the AWS VPC CNI and install **Calico CNI**.
 
    To install Calico CNI, the first step is to remove the AWS VPC CNI, and then proceed with the installation of Calico. For further information about Calico CNI installation on AWS EKS, please refer to the [Project Calico documentation](https://projectcalico.docs.tigera.io/getting-started/kubernetes/managed-public-cloud/eks)
 
-   - Uninstall AWS VPN CNI
+   Delete the `aws-node` daemonset resource to uninstall AWS VPN CNI
 
-     ```bash
-     kubectl delete daemonset -n kube-system aws-node
-     ```
+   ```bash
+   kubectl delete daemonset -n kube-system aws-node
+   ```
 
 5. Install Calico CNI
 
    ```bash
-   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
+   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
    ```
 
 6. Create the installation configuration.
@@ -455,18 +399,82 @@ In this module, the EKS cluster is initially provisioned with AWS VPC CNI. To in
        type: Calico
      calicoNetwork:
        bgp: Disabled
+       linuxDataplane: BPF
+       hostPorts: Disabled
    EOF
    ```
 
-7. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
+7. Check data plane configuration
+
+   ```bash
+   kubectl get installation.operator.tigera.io default -ojsonpath='{.spec.calicoNetwork.linuxDataplane}'
+   ```
+
+8. Create the nodegroup and the nodes. Two nodes are enough to demonstrate the concept.
 
    ```bash
    eksctl create nodegroup \
-     --cluster $CLUSTERNAME2 \
-     --region $REGION \
-     --node-type $INSTANCETYPE \
-     --max-pods-per-node 100
+   --cluster $CLUSTERNAME2 \
+   --region $REGION \
+   --node-type $INSTANCETYPE \
+   --node-ami-family Bottlerocket \
+   --max-pods-per-node 100
    ```
+
+   Wait for all Calico components to get deployed and only then proceed to next step.
+
+   ```bash
+   kubectl get tigerastatus
+   ```
+
+9. Configure Calico to talk directly to the API server
+
+   - Get config values from EKS cluster settings
+
+      ```bash
+      APISERVER_ADDR=$(kubectl get configmap -n kube-system kube-proxy -o yaml | grep   server |  awk -F "/" '{print $3}')
+      APISERVER_PORT=$(kubectl get endpoints kubernetes -ojsonpath='{.subsets[0].ports  [0].port}')
+      ```
+
+   - Configure kubernetes-services-endpoint configmap
+  
+      ```yaml
+      kubectl apply -f - <<-EOF
+      kind: ConfigMap
+      apiVersion: v1
+      metadata:
+        name: kubernetes-services-endpoint
+        namespace: tigera-operator
+      data:
+        KUBERNETES_SERVICE_HOST: "${APISERVER_ADDR}"
+        KUBERNETES_SERVICE_PORT: "${APISERVER_PORT}"
+      EOF
+      ```
+
+10. Disable `kube-proxy`
+
+   In eBPF mode Calico replaces kube-proxy so it doesn't make sense to run both. Disable the kube-proxy in the cluster.
+
+   ```bash
+   kubectl patch ds -n kube-system kube-proxy -p '{"spec":{"template":{"spec":{"nodeSelector":{"non-calico": "true"}}}}}'
+   ```
+
+11. *[optional]* Enable DSR mode
+
+   Direct return mode skips a hop through the network for traffic to services (such as node ports) from outside the cluster. This reduces latency and CPU overhead but it requires the underlying network to allow nodes to send traffic with each other's IPs. In AWS, this requires all your nodes to be in the same subnet and for the source/dest check to be disabled.
+
+   DSR mode is disabled by default; to enable it, set the BPFExternalServiceMode Felix configuration parameter to "DSR". This can be done with kubectl:
+
+   ```bash
+   kubectl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
+   ```
+
+If you want to learn more about eBPF dataplane, here are some links:
+
+- [Introducing the Calico eBPF dataplane](https://www.tigera.io/blog/introducing-the-calico-ebpf-dataplane/)
+- [eBPF Explained: Use Cases, Concepts, and Architecture](https://www.tigera.io/learn/guides/ebpf/)
+- [eBPF XDP: The Basics and a Quick Tutorial](https://www.tigera.io/learn/guides/ebpf/ebpf-xdp/)
+- [Get started with XDP](https://developers.redhat.com/blog/2021/04/01/get-started-with-xdp)
 
 With Calico CNI you avoid dependencies on AWS VPC CNI. Allocating pod IPs from the underlying VPC is problematic due to IP address range exhaustion challenges, or if the maximum number of pods supported per node by the Amazon VPC CNI plugin is not sufficient for your needs, we recommend using Calico networking in cross-subnet overlay mode. Pod IPs will not be routable outside of the cluster, but you can scale the cluster up to the limits of Kubernetes with no dependencies on the underlying cloud network.
 
@@ -488,12 +496,12 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
 1. Define the environment variables to be used by the resources definition.
 
-> [!NOTE]
-> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
->
-> ```console
-> source ~/labVars.env
-> ```
+   > [!NOTE]
+   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+   >
+   > ```console
+   > source ~/labVars.env
+   > ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
@@ -519,14 +527,14 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
      kubectl get nodes
      ```
 
-> [!TIP]
-> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
->
->```bash
-> source ~/labVars.env
->
-> aws eks update-kubeconfig --name $CLUSTERNAME3 --region $REGION
->```
+   > [!TIP]
+   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+   >
+   >```bash
+   > source ~/labVars.env
+   >
+   > aws eks update-kubeconfig --name $CLUSTERNAME3 --region $REGION
+   >```
 
 3. [Enable Windows support for your Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html)
 
