@@ -90,16 +90,14 @@ To begin the bootcamp, you'll need to meet the following basic requirements:
    ```bash
    mkdir ~/.local/bin
    curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-   sudo mv /tmp/eksctl ~/.local/bin
-   eksctl version 
+   sudo mv /tmp/eksctl ~/.local/bin && eksctl version 
    ```
 
 6. Install the K9S, if you like it.
 
    ```bash
    curl --silent --location "https://github.com/derailed/k9s/releases/download/v0.32.5/k9s_Linux_amd64.tar.gz" | tar xz -C /tmp
-   sudo mv /tmp/k9s ~/.local/bin
-   k9s version
+   sudo mv /tmp/k9s ~/.local/bin && k9s version
    ```
 
 7. Clone this repository in your Azure Cloud Shell.
