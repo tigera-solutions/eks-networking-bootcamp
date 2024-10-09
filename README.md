@@ -115,12 +115,12 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
-   > ```console
-   > source ~/labVars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/labVars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
@@ -153,14 +153,14 @@ This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon
    kubectl get nodes
    ```
 
-   > [!TIP]
-   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-   >
-   >```bash
-   > source ~/labVars.env
-   >
-   > aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
-   >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME1 --region $REGION
+>```
 
 After provisioning the EKS cluster, the PODs will be networked using Amazon VPC CNI, enabling routable IPs. For enhanced security and observability features offered by Calico, you have the option to connect your cluster to Calico Cloud or install Calico Enterprise on it.
 
@@ -279,16 +279,16 @@ Calico Security Policies provide a richer set of policy capabilities than the na
 
 3. Now that you have learned how to create policies using Calico Cloud UI, go ahead and create microsegmentation policies for the `worker` workload.
 
-   > [!TIP]
-   >
-   > - Look into the Cat Facts application diagram to figure out all the communications to and from the `worker` microservice.
-   > - You can use the `Recommend a Policy` feature as well. Don't forget to edit the recommendations to make it as granular as possible, like restricting the domain names of the API's that the worker needs to communicate with (`dog.ceo` and `catfact.ninja`).
+> [!TIP]
+>
+> - Look into the Cat Facts application diagram to figure out all the communications to and from the `worker` microservice.
+> - You can use the `Recommend a Policy` feature as well. Don't forget to edit the recommendations to make it as granular as possible, like restricting the domain names of the API's that the worker needs to communicate with (`dog.ceo` and `catfact.ninja`).
 
    If you create all the policies correctly, at some point, you will start seeing zero traffic being denied by your default-deny staged policy. At that point, you can go ahead and enforce the default-deny policy. Voilà! The `catfacts` namespace is now secure.
 
-   > [!TIP]
-   >
-   > - After enforcing the default-deny policy, if you need to troubleshoot, use the Service Graph or the Flow Visualizations tools to see what traffic is being blocked.
+> [!TIP]
+>
+> - After enforcing the default-deny policy, if you need to troubleshoot, use the Service Graph or the Flow Visualizations tools to see what traffic is being blocked.
 
 ### Clean up
 
@@ -324,12 +324,12 @@ In this module, the EKS cluster is provisioned and configured to use Calico CNI 
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
-   > ```console
-   > source ~/labVars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/labVars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
@@ -494,12 +494,12 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
 
 1. Define the environment variables to be used by the resources definition.
 
-   > [!NOTE]
-   > In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
-   >
-   > ```console
-   > source ~/labVars.env
-   > ```
+> [!NOTE]
+> In this section, we'll create some environment variables. If your terminal session restarts, you may need to reset these variables. You can do that using the following command:
+>
+> ```console
+> source ~/labVars.env
+> ```
 
    ```bash
    # Feel free to use the cluster name and the region that better suits you.
