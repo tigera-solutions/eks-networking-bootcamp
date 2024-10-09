@@ -107,7 +107,7 @@ To begin the bootcamp, you'll need to meet the following basic requirements:
    cd eks-networking-bootcamp
    ```
 
-## Module 2: EKS cluster with Calico eBPF mode
+## Module 2: EKS cluster with AWS VPC CNI and Calico for Network Policy
 
 This module provisions an EKS cluster with [AWS VPC CNI](https://docs.aws.amazon.com/eks/latest/userguide/eks-networking.html) and connects it to Calico Cloud.
 
