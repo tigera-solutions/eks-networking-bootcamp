@@ -341,8 +341,8 @@ In this module, the EKS cluster is provisioned and configured to use Calico CNI 
 
 2. Create the EKS cluster.
 
-   > [!NOTE]
-   > If you intend to use `Wireguard` based encryption to security pod-to-pod communications, the EKS cluster must be provisioned to use AMI that includes `Wireguard` bits. One of such AMI's is `Bottlerocket` that is used in this example.
+> [!NOTE]
+> If you intend to use `Wireguard` based encryption to security pod-to-pod communications, the EKS cluster must be provisioned to use AMI that includes `Wireguard` bits. One of such AMI's is `Bottlerocket` that is used in this example.
 
    ```bash
    eksctl create cluster \
@@ -358,14 +358,14 @@ In this module, the EKS cluster is provisioned and configured to use Calico CNI 
    kubectl get pod -A
    ```
 
-   > [!TIP]
-   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-   >
-   >```bash
-   > source ~/labVars.env
-   >
-   > aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
-   >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME2 --region $REGION
+>```
 
 4. Uninstall the AWS VPC CNI and install **Calico CNI**.
 
@@ -525,14 +525,14 @@ In this module EKS cluster is provisioned with [AWS VPC CNI](https://docs.aws.am
      kubectl get nodes
      ```
 
-   > [!TIP]
-   > If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
-   >
-   >```bash
-   > source ~/labVars.env
-   >
-   > aws eks update-kubeconfig --name $CLUSTERNAME3 --region $REGION
-   >```
+> [!TIP]
+> If you loose access to your EKS cluster, you can update the kubeconfig to restore the kubectl access to it by running the following command:
+>
+>```bash
+> source ~/labVars.env
+>
+> aws eks update-kubeconfig --name $CLUSTERNAME3 --region $REGION
+>```
 
 3. [Enable Windows support for your Amazon EKS cluster](https://docs.aws.amazon.com/eks/latest/userguide/windows-support.html)
 
