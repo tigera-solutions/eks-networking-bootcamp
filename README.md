@@ -380,7 +380,7 @@ In this module, the EKS cluster is provisioned and configured to use Calico CNI 
 5. Install Calico CNI
 
    ```bash
-   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
+   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/tigera-operator.yaml
    ```
 
 6. Create the installation configuration.
