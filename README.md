@@ -461,11 +461,25 @@ In this module, the EKS cluster is provisioned and configured to use Calico CNI 
 
    Direct return mode skips a hop through the network for traffic to services (such as node ports) from outside the cluster. This reduces latency and CPU overhead but it requires the underlying network to allow nodes to send traffic with each other's IPs. In AWS, this requires all your nodes to be in the same subnet and for the source/dest check to be disabled.
 
-   DSR mode is disabled by default; to enable it, set the BPFExternalServiceMode Felix configuration parameter to "DSR". This can be done with kubectl:
+   DSR mode is disabled by default; to enable it, set the BPFExternalServiceMode Felix configuration parameter to "DSR". This can only be done with calicoctl:
 
-   ```bash
-   kubectl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
-   ```
+   - Use the following command to download the calicoctl binary.
+
+     ```bash
+     curl -L https://github.com/projectcalico/calico/releases/download/v3.28.2/calicoctl-linux-amd64 -o kubectl-calico
+     ```
+
+   - Set the file to be executable.
+  
+     ```bash
+     chmod +x kubectl-calico
+     ```
+
+   - Configure Calico to use DSR
+
+     ```bash
+     calicoctl patch felixconfiguration default --patch='{"spec": {"bpfExternalServiceMode": "DSR"}}'
+     ```
 
 If you want to learn more about eBPF dataplane, here are some links:
 
